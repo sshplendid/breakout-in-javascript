@@ -1,0 +1,31 @@
+{
+  "name": "breaktout-game",
+  "version": "0.0.1",
+  "description": "Breakout game base on HTML5",
+  "main": "index.js",
+  "scripts": {
+    "test": "nyc --reporter=html --reporter=text mocha $(find ./ -name '*.spec.js') --recursive"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sshplendid/breakout-in-javascript.git"
+  },
+  "keywords": [
+    "javascript",
+    "vanillaJS",
+    "breakout",
+    "game",
+    "HTML5"
+  ],
+  "author": "SeHun Shin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sshplendid/breakout-in-javascript/issues"
+  },
+  "homepage": "https://github.com/sshplendid/breakout-in-javascript#readme",
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^5.2.0",
+    "nyc": "^13.0.1"
+  }
+}
