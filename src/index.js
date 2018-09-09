@@ -5,7 +5,7 @@ console.debug = (message) => console.log(`[DEBUG] ${message}`);
 // load source
 const Configuration = require('./core/config/config.js');
 // const Brick = require('./core/elements/brick.js');
-// const Ball = require('./core/elements/ball.js');
+const Ball = require('./core/elements/ball.js');
 const Paddle = require('./core/elements/paddle.js');
 // const Painter = require('./render/painter.js');
 
@@ -53,7 +53,7 @@ function keyUpHandler(e) {
 document.addEventListener('keyup', keyUpHandler);
 document.addEventListener('keydown', keyDownHandler);
 
-function Ball(_x, _y, _r, _c, _dx, _dy) {
+function _Ball(_x, _y, _r, _c, _dx, _dy) {
 
   this.x = val => _x = val || _x;
   this.y = val => _y = val || _y;
@@ -62,7 +62,7 @@ function Ball(_x, _y, _r, _c, _dx, _dy) {
   this.radius = val => _r = val || _r;
   this.color = val => _c = val || _c;
 
-  Ball.prototype.draw = function() {
+  _Ball.prototype.draw = function() {
     ctx.beginPath();
     ctx.arc(this.x(), this.y(), this.radius(), 0, Math.PI*2);
     ctx.fillStyle = this.color();
@@ -70,22 +70,19 @@ function Ball(_x, _y, _r, _c, _dx, _dy) {
     ctx.closePath();
   };
 
-  Ball.prototype.move = function(board) {
+  _Ball.prototype.move = function(board) {
     this.move.crossed = this.move.crossed || false;
     if(this.y() - this.radius() + this.dy() <= 0) {
       this.dy(this.dy() * (0-1));
     } else if(this.y() + this.radius() + this.dy() >= canvas.height - CONF.paddleTop) {
-      // MOD_PADDLE if(this.y() < canvas.height - CONF.paddleTop && this.x() > board.x() && this.x() <= board.x() + board.w()) {
-      if(this.y() < canvas.height - CONF.paddleTop && this.x() > board.paddle.x && this.x() <= board.paddle.x + board.paddle.width) {
+      if(this.y() < canvas.height - CONF.paddleTop && this.x() > paddle.x && this.x() <= paddle.x + paddle.width) {
         this.dy(this.dy() * (0-1));
       }
     }
     if(this.x() + this.dx() <  this.radius() || this.x() + this.dx() > canvas.width - this.radius()) {
       this.dx(this.dx() * (0-1));
-    // MOD_PADDLE } else if( (this.y() > board.y() && this.y() < board.y() + board.h() && this.x() + this.radius() + this.dx() >= board.x())
-    } else if( (this.y() > board.paddle.y && this.y() < board.paddle.y + board.paddle.height && this.x() + this.radius() + this.dx() >= board.paddle.x)
-              // MOD_PADDLE && (this.y() > board.y() && this.y() < board.y() + board.h() && this.x() - this.radius() + this.dx() <= board.x() + board.w()) ) {
-              && (this.y() > board.paddle.y && this.y() < board.paddle.y + board.paddle.height && this.x() - this.radius() + this.dx() <= board.paddle.x + board.paddle.width) ) {
+    } else if( (this.y() > paddle.y && this.y() < paddle.y + paddle.height && this.x() + this.radius() + this.dx() >= paddle.x)
+              && (this.y() > paddle.y && this.y() < paddle.y + paddle.height && this.x() - this.radius() + this.dx() <= paddle.x + paddle.width) ) {
       this.dx(this.dx() * (0-1));
     }
 
@@ -93,7 +90,7 @@ function Ball(_x, _y, _r, _c, _dx, _dy) {
     this.y(this.y() + this.dy());
     console.debug('(x, y) => (' + this.x() + ', ' + this.y() + ', ' + this.dy() + ')');
   };
-  Ball.prototype.detectCollision = (bricks) => {
+  _Ball.prototype.detectCollision = (bricks) => {
     var _c = bricks.length;
     for(var c = 0; c < _c; c++) {
       var _r = bricks[c].length;
@@ -117,50 +114,13 @@ function Ball(_x, _y, _r, _c, _dx, _dy) {
 function BallManager(number) {
   var balls = [];
   for(var i = 0; i < number; i++) {
-    balls[i] = new Ball(230, 230, 3, 'blue', (Math.random() - 0.5)*4, (Math.random() - 0.5)*4);
+    balls[i] = new _Ball(230, 230, 3, 'blue', (Math.random() - 0.5)*4, (Math.random() - 0.5)*4);
   }
 
   this.get = i => balls[i] || 0;
   this.getAll = () => balls;
   this.length = balls.length;
   this.allGone = () => balls.filter(ball => ball.y() - ball.radius() > canvas.height || ball.x() - ball.radius() < 0 || ball.x()  + ball.radius() > canvas.height).length  == balls.length;
-}
-
-function _Board(_x, _y, _w, _h, _dx, _color) {
-  this.x = val => _x = val || _x;
-  this.y = val => _y = val || _y;
-  this.w = val => _w = val || _w;
-  this.h = val => _h = val || _h;
-  this.dx = val => _dx = val || _dx;
-  this.color = val => _color = val || _color;
-  this.paddle = new Paddle(_x, _y, _w, _h, _color, _dx);
-
-  _Board.prototype.move = function() {
-    // MOD_PADDLE if(this.x() + this.dx() <  0 || this.x() + this.w() + this.dx() > canvas.width)
-    // if(this.paddle.isBoundary(0, canvas.width))
-    //   return;
-
-    if( rightPressed && this.paddle.isNotOnRightBoundary(canvas.width) ) {
-      // MOD_PADDLE this.dx(Math.abs(this.dx()));
-      this.paddle.move();
-    } else if( leftPressed && this.paddle.isNotOnLeftBoundary(0) ){
-      // MOD_PADDLE this.dx(Math.abs(this.dx()) * (0-1));
-      this.paddle.move(true);
-    } else {
-      return;
-    }
-
-    // this.x(this.x() + this.dx());
-  };
-  _Board.prototype.draw = function() {
-    ctx.beginPath();
-    // MOD_PADDLE ctx.rect(this.x(), this.y(), this.w(), this.h());
-    // MOD_PADDLE ctx.fillStyle = this.color();
-    ctx.rect(this.paddle.x, this.paddle.y, this.paddle.width, this.paddle.height);
-    ctx.fillStyle = this.paddle.color;
-    ctx.fill();
-    ctx.closePath();
-  }
 }
 
 function BrickFactory(_r, _c, _w, _h, _color, _padding, _offsetTop, _offsetLeft) {
@@ -217,20 +177,44 @@ function BrickFactory(_r, _c, _w, _h, _color, _padding, _offsetTop, _offsetLeft)
       clearInterval(intervalId);
     }
   }
+  const paddle = new Paddle(250, 500, 120, 10, 'rgba(36, 68, 38, 0.8)', 3);
 
-  var ballManager = new BallManager(1);
-  var board = new _Board(250, 500, 120, 10, 3, 'rgba(36, 68, 38, 0.8)');
-  var bricks = new BrickFactory(4, 4, 80, 20, 'lightgray', 30, CONF.paddleTop, 25);
+  
+  
+  
+  { // LEGACY CODE --------------------------------->
+
+    var ballManager = new BallManager(1);
+    var bricks = new BrickFactory(4, 4, 80, 20, 'lightgray', 30, CONF.paddleTop, 25);
+
+    // Board Legacy 대응
+    paddle._move = function() {
+      if( rightPressed && this.isNotOnRightBoundary(canvas.width) ) {
+        this.move();
+      } else if( leftPressed && this.isNotOnLeftBoundary(0) ){
+        this.move(true);
+      } 
+    };
+    paddle._draw = function() {
+      ctx.beginPath();
+      ctx.rect(this.x, this.y, this.width, this.height);
+      ctx.fillStyle = this.color;
+      ctx.fill();
+      ctx.closePath();
+    };
+    // LEGACY CODE END --------------------------------->
+  }
+
 
   var intervalId = setInterval(function() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     bricks.drawBricks();
     ballManager.getAll().forEach(ball => ball.detectCollision(bricks.getBricks()));
-    ballManager.getAll().forEach(ball => ball.move(board));
+    ballManager.getAll().forEach(ball => ball.move(paddle));
     ballManager.getAll().forEach(ball => ball.draw());
-    board.move();
-    board.draw();
+    paddle._move();
+    paddle._draw();
     isOver(ballManager, intervalId);
   }, 10);
 // })();
