@@ -37,19 +37,16 @@ describe(`Configuration test suite`, () => {
   });
   it(`testSetCanvasWidth_속성값을_바꾸면_오류가발생한다.`, () => {
     const conf = new Configuration(1, 1, 1);
-    // assert.throws(() => { conf.canvasWidth = 5; });
     conf.canvasWidth = 3;
     assert.notEqual(conf.canvasWidth, 3);
   });
   it(`testSetCanvasHeight_속성값을_바꾸면_오류가발생한다.`, () => {
     const conf = new Configuration(1, 1, 1);
-    // assert.throws(() => { conf.canvasHeight = 5; });
     conf.canvasWidth = 3;
     assert.notEqual(conf.canvasHeight, 3);
   });
   it(`testSetPaddleTop_속성값을_바꾸면_오류가발생한다.`, () => {
     const conf = new Configuration(1, 1, 1);
-    // assert.throws(() => { conf.paddleTop = 5; });
     conf.paddleTop = 3;
     assert.notEqual(conf.paddleTop, 3);
   });
