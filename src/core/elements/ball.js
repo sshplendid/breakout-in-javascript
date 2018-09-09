@@ -48,8 +48,9 @@ class Ball {
     // TODO 원의 반지름 구하기
     const _radius = Math.sqrt( Math.pow(xDiff, 2) + Math.pow(yDiff, 2)); 
     
-    return this.radius <= _radius;
+    return this.radius >= _radius;
   }
+
 }
 
 module.exports = Ball;

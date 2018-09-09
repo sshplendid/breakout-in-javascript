@@ -1,14 +1,27 @@
 'use strict';
 
+console.debug = (message) => console.log(`[DEBUG] ${message}`);
+
+// load source
+const Configuration = require('./core/config/config.js');
+// const Brick = require('./core/elements/brick.js');
+// const Ball = require('./core/elements/ball.js');
+// const Paddle = require('./core/elements/paddle.js');
+// const Painter = require('./render/painter.js');
+
 // config
-const CONF = {};
-CONF.canvasWidth = 450;
-CONF.canvasHeight = 600;
-CONF.paddleBaseY = 100;
+const options = {
+  canvasWidth: 450,
+  canvasHeight: 600,
+  paddleTop: 100,
+};
+const CONF = new Configuration(
+  options.canvasWidth, 
+  options.canvasHeight, 
+  options.paddleTop);
 
 
 // init
-
 var canvas = document.createElement('canvas');
 canvas.width = CONF.canvasWidth;
 canvas.height = CONF.canvasHeight;
@@ -61,8 +74,8 @@ function Ball(_x, _y, _r, _c, _dx, _dy) {
     this.move.crossed = this.move.crossed || false;
     if(this.y() - this.radius() + this.dy() <= 0) {
       this.dy(this.dy() * (0-1));
-    } else if(this.y() + this.radius() + this.dy() >= canvas.height - CONF.paddleBaseY) {
-      if(this.y() < canvas.height - CONF.paddleBaseY && this.x() > board.x() && this.x() <= board.x() + board.w()) {
+    } else if(this.y() + this.radius() + this.dy() >= canvas.height - CONF.paddleTop) {
+      if(this.y() < canvas.height - CONF.paddleTop && this.x() > board.x() && this.x() <= board.x() + board.w()) {
         this.dy(this.dy() * (0-1));
       }
     }
@@ -121,10 +134,8 @@ function Board(_x, _y, _w, _h, _dx, _color) {
   Board.prototype.move = function() {
     if(rightPressed) {
       this.dx(Math.abs(this.dx()));
-      // console.log('r: ');
     } else if(leftPressed){
       this.dx(Math.abs(this.dx()) * (0-1));
-      // console.log('l: ');
     } else {
       return;
     }
@@ -174,7 +185,6 @@ function BrickFactory(_r, _c, _w, _h, _color, _padding, _offsetTop, _offsetLeft)
       var brickX = c * (_w + _padding) + _offsetLeft;
       var brickY = r * (_h + _padding) + _offsetTop;
       var durability = Math.ceil(Math.random()*3) ;
-      // console.warn(`(${c}, ${r}) => ${durability}`);
       bricks[c][r] = new Brick(brickX, brickY, _w, _h, color[durability], durability);
     }
   }
@@ -191,9 +201,7 @@ function BrickFactory(_r, _c, _w, _h, _color, _padding, _offsetTop, _offsetLeft)
   };
 }
 
-// (function() {
   function isOver(ballManager, intervalId) {
-    // if(ball.y() - ball.radius() > canvas.height || ball.x() - ball.radius() < 0 || ball.x()  + ball.radius() > canvas.height) {
     if(ballManager.allGone()) {
       alert('GAME OVER');
       clearInterval(intervalId);
@@ -202,7 +210,7 @@ function BrickFactory(_r, _c, _w, _h, _color, _padding, _offsetTop, _offsetLeft)
 
   var ballManager = new BallManager(1);
   var board = new Board(250, 500, 120, 10, 3, 'rgba(36, 68, 38, 0.8)');
-  var bricks = new BrickFactory(4, 4, 80, 20, 'lightgray', 30, CONF.paddleBaseY, 25);
+  var bricks = new BrickFactory(4, 4, 80, 20, 'lightgray', 30, CONF.paddleTop, 25);
 
   var intervalId = setInterval(function() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);

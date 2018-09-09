@@ -3,8 +3,8 @@
 const {assert, expect} = require('chai');
 const Configuration = require('./config.js');
 
-describe(`Configuration test suite`, () => {
-  it(`testIntantiate_인자없이_초기화하면_기본값이설정된다.`, () => {
+describe(`core/config/Configuration`, () => {
+  it(`constructor_인자없이_초기화하면_기본값이설정된다.`, () => {
     const conf = new Configuration();
     assert.ok(conf);
     assert.isNumber(conf.canvasHeight);
@@ -12,7 +12,7 @@ describe(`Configuration test suite`, () => {
     assert.isNumber(conf.paddleTop);
   });
 
-  it(`testIntantiate_인자가존재할때_초기화하면_접근이가능하다`, () => {
+  it(`constructor_인자가존재할때_초기화하면_접근이가능하다`, () => {
     const conf = new Configuration(1,2,3);
     assert.ok(conf);
     assert.isNumber(conf.canvasHeight);
@@ -20,32 +20,32 @@ describe(`Configuration test suite`, () => {
     assert.isNumber(conf.paddleTop);
   });
 
-  it(`testGetCanvasWidth`, () => {
+  it(`getter:CanvasWidth`, () => {
     const conf = new Configuration(1, 2, 3);
     assert.isNumber(conf.canvasWidth);
     assert.equal(conf.canvasWidth, 1);
   });
-  it(`testGetCanvasHeight`, () => {
+  it(`getter:CanvasHeight`, () => {
     const conf = new Configuration(1, 2, 3);
     assert.isNumber(conf.canvasHeight);
     assert.equal(conf.canvasHeight, 2);
   });
-  it(`testGetPaddleTop`, () => {
+  it(`getter:PaddleTop`, () => {
     const conf = new Configuration(1, 2, 3);
     assert.isNumber(conf.paddleTop);
     assert.equal(conf.paddleTop, 3);
   });
-  it(`testSetCanvasWidth_속성값을_바꾸면_오류가발생한다.`, () => {
+  it(`setter:CanvasWidth__속성 값을 바꾸면_값은 바뀌지 않는다`, () => {
     const conf = new Configuration(1, 1, 1);
     conf.canvasWidth = 3;
     assert.notEqual(conf.canvasWidth, 3);
   });
-  it(`testSetCanvasHeight_속성값을_바꾸면_오류가발생한다.`, () => {
+  it(`setter:CanvasHeight__속성 값을 바꾸면_값은 바뀌지 않는다`, () => {
     const conf = new Configuration(1, 1, 1);
     conf.canvasWidth = 3;
     assert.notEqual(conf.canvasHeight, 3);
   });
-  it(`testSetPaddleTop_속성값을_바꾸면_오류가발생한다.`, () => {
+  it(`setter:PaddleTop__속성 값을 바꾸면_값은 바뀌지 않는다`, () => {
     const conf = new Configuration(1, 1, 1);
     conf.paddleTop = 3;
     assert.notEqual(conf.paddleTop, 3);
