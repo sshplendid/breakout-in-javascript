@@ -14,9 +14,29 @@ class Paddle {
   move(left) {
     if(!!this.dx) {
       const _dx = left ? (-1) * this.dx : this.dx;
-      (this.x += _dx);
+      this.x += _dx;
       return true;
     } else return false;
+  }
+
+  isOnBoundary(left, right) { 
+    return this.isOnLeftBoundary(left) || this.isOnRightBoundary(right) ;
+  }
+
+  isOnRightBoundary(boundary) { 
+    return boundary <= (this.x + this.width) ;
+  }
+  
+  isOnLeftBoundary(boundary) { 
+    return boundary >= this.x;
+  }
+
+  isNotOnRightBoundary(boundary) { 
+    return !( boundary <= (this.x + this.width) );
+  }
+  
+  isNotOnLeftBoundary(boundary) { 
+    return !( boundary >= this.x );
   }
 }
 

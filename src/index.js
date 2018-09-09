@@ -6,7 +6,7 @@ console.debug = (message) => console.log(`[DEBUG] ${message}`);
 const Configuration = require('./core/config/config.js');
 // const Brick = require('./core/elements/brick.js');
 // const Ball = require('./core/elements/ball.js');
-// const Paddle = require('./core/elements/paddle.js');
+const Paddle = require('./core/elements/paddle.js');
 // const Painter = require('./render/painter.js');
 
 // config
@@ -75,14 +75,17 @@ function Ball(_x, _y, _r, _c, _dx, _dy) {
     if(this.y() - this.radius() + this.dy() <= 0) {
       this.dy(this.dy() * (0-1));
     } else if(this.y() + this.radius() + this.dy() >= canvas.height - CONF.paddleTop) {
-      if(this.y() < canvas.height - CONF.paddleTop && this.x() > board.x() && this.x() <= board.x() + board.w()) {
+      // MOD_PADDLE if(this.y() < canvas.height - CONF.paddleTop && this.x() > board.x() && this.x() <= board.x() + board.w()) {
+      if(this.y() < canvas.height - CONF.paddleTop && this.x() > board.paddle.x && this.x() <= board.paddle.x + board.paddle.width) {
         this.dy(this.dy() * (0-1));
       }
     }
     if(this.x() + this.dx() <  this.radius() || this.x() + this.dx() > canvas.width - this.radius()) {
       this.dx(this.dx() * (0-1));
-    } else if( (this.y() > board.y() && this.y() < board.y() + board.h() && this.x() + this.radius() + this.dx() >= board.x())
-              && (this.y() > board.y() && this.y() < board.y() + board.h() && this.x() - this.radius() + this.dx() <= board.x() + board.w()) ) {
+    // MOD_PADDLE } else if( (this.y() > board.y() && this.y() < board.y() + board.h() && this.x() + this.radius() + this.dx() >= board.x())
+    } else if( (this.y() > board.paddle.y && this.y() < board.paddle.y + board.paddle.height && this.x() + this.radius() + this.dx() >= board.paddle.x)
+              // MOD_PADDLE && (this.y() > board.y() && this.y() < board.y() + board.h() && this.x() - this.radius() + this.dx() <= board.x() + board.w()) ) {
+              && (this.y() > board.paddle.y && this.y() < board.paddle.y + board.paddle.height && this.x() - this.radius() + this.dx() <= board.paddle.x + board.paddle.width) ) {
       this.dx(this.dx() * (0-1));
     }
 
@@ -123,31 +126,38 @@ function BallManager(number) {
   this.allGone = () => balls.filter(ball => ball.y() - ball.radius() > canvas.height || ball.x() - ball.radius() < 0 || ball.x()  + ball.radius() > canvas.height).length  == balls.length;
 }
 
-function Board(_x, _y, _w, _h, _dx, _color) {
+function _Board(_x, _y, _w, _h, _dx, _color) {
   this.x = val => _x = val || _x;
   this.y = val => _y = val || _y;
   this.w = val => _w = val || _w;
   this.h = val => _h = val || _h;
   this.dx = val => _dx = val || _dx;
   this.color = val => _color = val || _color;
+  this.paddle = new Paddle(_x, _y, _w, _h, _color, _dx);
 
-  Board.prototype.move = function() {
-    if(rightPressed) {
-      this.dx(Math.abs(this.dx()));
-    } else if(leftPressed){
-      this.dx(Math.abs(this.dx()) * (0-1));
+  _Board.prototype.move = function() {
+    // MOD_PADDLE if(this.x() + this.dx() <  0 || this.x() + this.w() + this.dx() > canvas.width)
+    // if(this.paddle.isBoundary(0, canvas.width))
+    //   return;
+
+    if( rightPressed && this.paddle.isNotOnRightBoundary(canvas.width) ) {
+      // MOD_PADDLE this.dx(Math.abs(this.dx()));
+      this.paddle.move();
+    } else if( leftPressed && this.paddle.isNotOnLeftBoundary(0) ){
+      // MOD_PADDLE this.dx(Math.abs(this.dx()) * (0-1));
+      this.paddle.move(true);
     } else {
       return;
     }
-    if(this.x() + this.dx() <  0 || this.x() + this.w() + this.dx() > canvas.width)
-      return;
 
-    this.x(this.x() + this.dx());
+    // this.x(this.x() + this.dx());
   };
-  Board.prototype.draw = function() {
+  _Board.prototype.draw = function() {
     ctx.beginPath();
-    ctx.rect(this.x(), this.y(), this.w(), this.h());
-    ctx.fillStyle = this.color();
+    // MOD_PADDLE ctx.rect(this.x(), this.y(), this.w(), this.h());
+    // MOD_PADDLE ctx.fillStyle = this.color();
+    ctx.rect(this.paddle.x, this.paddle.y, this.paddle.width, this.paddle.height);
+    ctx.fillStyle = this.paddle.color;
     ctx.fill();
     ctx.closePath();
   }
@@ -209,7 +219,7 @@ function BrickFactory(_r, _c, _w, _h, _color, _padding, _offsetTop, _offsetLeft)
   }
 
   var ballManager = new BallManager(1);
-  var board = new Board(250, 500, 120, 10, 3, 'rgba(36, 68, 38, 0.8)');
+  var board = new _Board(250, 500, 120, 10, 3, 'rgba(36, 68, 38, 0.8)');
   var bricks = new BrickFactory(4, 4, 80, 20, 'lightgray', 30, CONF.paddleTop, 25);
 
   var intervalId = setInterval(function() {

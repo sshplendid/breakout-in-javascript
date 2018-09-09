@@ -47,4 +47,28 @@ describe(`core/elements/Paddle`, () => {
     const actual = new Paddle(1, 1, 1, 1, 1, 0);
     assert.isFalse(actual.move(true));
   });
+  it(`isOnBoundary`, () => {
+    const actual = new Paddle(2, 1, 5, 1, 1, 1);
+    assert.isFalse(actual.isOnBoundary(0, 10)); 
+  });
+  it(`isOnBoundary_x가 0이 될때까지 왼쪽으로 움직일 때_경계를 확인하면_ture를 리턴한다`, () => {
+    const actual = new Paddle(2, 1, 6, 1, 1, 1);
+    assert.isFalse(actual.isOnBoundary(0, 10)); 
+    
+    actual.move(true);
+    assert.isFalse(actual.isOnBoundary(0, 10)); 
+    
+    actual.move(true);
+    assert.isTrue(actual.isOnBoundary(0, 10), `x => ${actual.x}`); 
+  });
+  it(`isOnBoundary_x가 10이 될때까지 오른쪽으로 움직일 때_경계를 확인하면_ture를 리턴한다`, () => {
+    const actual = new Paddle(2, 1, 6, 1, 1, 1);
+    assert.isFalse(actual.isOnBoundary(0, 10), `x => ${actual.x}`); 
+    
+    actual.move();
+    assert.isFalse(actual.isOnBoundary(0, 10), `x => ${actual.x}`); 
+    
+    actual.move();
+    assert.isTrue(actual.isOnBoundary(0, 10), `x => ${actual.x}`); 
+  });
 });
