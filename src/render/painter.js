@@ -5,20 +5,15 @@ class Painter {
     if(canvasElement instanceof HTMLCanvasElement) this.el = canvasElement;
     else throw new Error(`argument is not a HTML canvas element!`);
     
-    this.x = x || undefined;
-    this.y = y || undefined;
-    this.w = w || undefined;
-    this.h = h || undefined;
+    this.x = x || 0;
+    this.y = y || 0;
+    this.w = w || 0;
+    this.h = h || 0;
     this.context = this.el.getContext('2d');
   }
 
   clear(x, y, w, h) {
-    const _x = x || this.x;
-    const _y = y || this.y;
-    const _w = w || this.w;
-    const _h = h || this.h;
-
-    this.context.clearRect(_x, _y, _w, _h);
+    this.context.clearRect(x, y, w, h);
   }
   drawCircle(x, y, radius, color) {
     try {
@@ -63,4 +58,4 @@ class Painter {
   }
 }
 
-module.exports = CanvasWrapper;
+module.exports = Painter;
