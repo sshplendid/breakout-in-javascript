@@ -2,11 +2,12 @@
   "name": "breaktout-game",
   "version": "0.0.1",
   "description": "Breakout game base on HTML5",
-  "main": "index.js",
+  "private": true,
   "scripts": {
+    "pack": "npx webpack",
     "build": "babel src -d lib",
-    "test": "nyc --reporter=html --reporter=text mocha $(find ./ -name '*.spec.js') --recursive",
-    "testing": "nyc --reporter=html --reporter=text mocha $(find ./ -name '*.spec.js') --recursive -w"
+    "test": "nyc --reporter=html --reporter=text mocha $(find ./src -name '*.spec.js') --recursive",
+    "testing": "nyc --reporter=html --reporter=text mocha $(find ./src -name '*.spec.js') --recursive -w"
   },
   "repository": {
     "type": "git",
