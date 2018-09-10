@@ -71,4 +71,19 @@ describe(`core/elements/Paddle`, () => {
     actual.move();
     assert.isTrue(actual.isOnBoundary(0, 10), `x => ${actual.x}`); 
   });
+
+  it(`isNotOnBoundary`, () => {
+    const actual = new Paddle(2, 2, 6, 3, 1, 1);
+    assert.isTrue(actual.isNotOnBoundary(0, 10), `(x, width) => {${actual.x}, ${actual.width}}`);
+    assert.isTrue(actual.isNotOnLeftBoundary(0) && actual.isNotOnRightBoundary(10), `(x, width) => {${actual.x}, ${actual.width}}`);
+    
+    actual.move(true);
+    assert.isTrue(actual.isNotOnBoundary(0, 10), `(x, width) => {${actual.x}, ${actual.width}}`);
+    assert.isTrue(actual.isNotOnLeftBoundary(0) && actual.isNotOnRightBoundary(10), `(x, width) => {${actual.x}, ${actual.width}}`);
+    
+    actual.move(true);
+    assert.isFalse(actual.isNotOnBoundary(0, 10), `(x, width) => {${actual.x}, ${actual.width}}`);
+    assert.isFalse(actual.isNotOnLeftBoundary(0), `(x, width) => {${actual.x}, ${actual.width}}`);
+    assert.isTrue(actual.isNotOnRightBoundary(10), `(x, width) => {${actual.x}, ${actual.width}}`);
+  });
 });

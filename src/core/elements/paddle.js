@@ -32,11 +32,15 @@ class Paddle {
   }
 
   isNotOnRightBoundary(boundary) { 
-    return !( boundary <= (this.x + this.width) );
+    return !this.isOnRightBoundary(boundary);
   }
   
   isNotOnLeftBoundary(boundary) { 
-    return !( boundary >= this.x );
+    return !this.isOnLeftBoundary(boundary);
+  }
+
+  isNotOnBoundary(left, right) {
+    return !this.isOnBoundary(left, right);
   }
 }
 
