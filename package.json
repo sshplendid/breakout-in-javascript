@@ -6,8 +6,8 @@
   "scripts": {
     "pack": "npx webpack --mode=development",
     "build": "babel src -d lib && npx webpack",
-    "test": "nyc --reporter=html --reporter=text mocha $(find ./src -name '*.spec.js') --recursive",
-    "testing": "nyc --reporter=html --reporter=text mocha $(find ./src -name '*.spec.js') --recursive -w"
+    "test": "nyc --reporter=html --reporter=text mocha \"./src/**/*.spec.js\" --recursive",
+    "testing": "nyc --reporter=html --reporter=text mocha \"./src/**/*.spec.js\" --recursive -w"
   },
   "repository": {
     "type": "git",
@@ -15,7 +15,6 @@
   },
   "keywords": [
     "javascript",
-    "vanillaJS",
     "breakout",
     "game",
     "HTML5"

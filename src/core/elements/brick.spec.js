@@ -22,6 +22,20 @@ describe(`core/elements/Brick`, () => {
     assert.equal(0, actual.durability);
   });
 
+  it(`constructor_인자가 options객체일 때_생성하면_options로 초기값이 세팅된다`, () => {
+    const options = {
+      x: 1,
+      y: 2,
+      width: 3,
+      height: 4,
+      color: 'black',
+      durability: 5
+    };
+    const actual = new Brick(options);
+    const expected = new Brick(1, 2, 3, 4, 'black', 5);
+    assert.deepEqual(expected, actual);
+  });
+
   it(`constructor_인자가 있을때_생성자를 호출하면_속성을 조회할 수 있다`, () => {
     const actual = new Brick(1, 1, 1, 1, 'blue', 3);
     assert.equal(1, actual.x);
