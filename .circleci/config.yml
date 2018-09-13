@@ -17,7 +17,7 @@ jobs:
     working_directory: ~/repo
 
     steps:
-      - checkout && echo $CODECOV_TOKEN
+      - checkout
 
       # Download and cache dependencies
       - restore_cache:
@@ -34,4 +34,6 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
         
       # run tests!
-      - run: yarn test
+      - test:
+          - mocha: yarn test
+          - coverage: yarn run coverage
