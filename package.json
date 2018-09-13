@@ -4,9 +4,10 @@
   "description": "Breakout game base on HTML5",
   "private": true,
   "scripts": {
+    "test": "nyc --reporter=html --reporter=text mocha \"./src/**/*.spec.js\" --recursive",
+    "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov --token=",
     "pack": "npx webpack --mode=development",
     "build": "babel src -d lib && npx webpack",
-    "test": "nyc --reporter=html --reporter=text mocha \"./src/**/*.spec.js\" --recursive",
     "testing": "nyc --reporter=html --reporter=text mocha \"./src/**/*.spec.js\" --recursive -w"
   },
   "repository": {
@@ -29,6 +30,7 @@
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "chai": "^4.1.2",
+    "codecov": "^3.1.0",
     "mocha": "^5.2.0",
     "nyc": "^13.0.1",
     "webpack": "^4.17.3",
