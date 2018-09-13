@@ -35,4 +35,5 @@ jobs:
         
       # run tests!
       - test: yarn test
+      
       - coverage: nyc report --reporter=text-lcov > coverage.lcov && codecov --token=$CODECOV_TOKEN
