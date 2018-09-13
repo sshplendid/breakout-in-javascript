@@ -1,9 +1,13 @@
 <h1 align="center">Breakout-2D-javascript</h1>
 
 <p align="center">
-<a href="https://circleci.com/gh/sshplendid/breakout-in-javascript/tree/master"><img src="https://circleci.com/gh/sshplendid/breakout-in-javascript/tree/master.svg?style=shield" alt="Circle CI" /></a>
+  <a href="https://circleci.com/gh/sshplendid/breakout-in-javascript/tree/master">
+    <img src="https://circleci.com/gh/sshplendid/breakout-in-javascript/tree/master.svg?style=shield" alt="Circle CI" />
+  </a>
+  <a href="https://codecov.io/gh/sshplendid/breakout-in-javascript">
+    <img src="https://codecov.io/gh/sshplendid/breakout-in-javascript/branch/master/graph/badge.svg" />
+  </a>
 </p>
---------------
 
 이 저장소는 벽돌깨기(breakout) 게임을 자바스크립트로 작성한 코드를 담고 있습니다.
 
