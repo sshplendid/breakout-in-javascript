@@ -36,4 +36,4 @@ jobs:
       # run tests!
       - run: yarn test
       
-      - run: nyc report --reporter=text-lcov > coverage.lcov && codecov
+      - run: nyc run coverage
