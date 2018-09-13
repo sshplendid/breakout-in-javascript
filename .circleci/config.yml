@@ -34,6 +34,5 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
         
       # run tests!
-      - test:
-          - mocha: yarn test
-          - coverage: yarn run coverage
+      - test: mocha: yarn test
+      - coverage: nyc report --reporter=text-lcov > coverage.lcov && codecov --token=$CODECOV_TOKEN
