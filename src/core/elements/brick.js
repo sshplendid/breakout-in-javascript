@@ -21,6 +21,7 @@ class Brick {
   }
 
   crack() {
+    console.debug(`Brick[${this.x}, ${this.y}] cracked => ${this.durability}`);
     return this.isNotBroken() && !!(this.durability--);
   }
 
