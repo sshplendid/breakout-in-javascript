@@ -8,22 +8,39 @@ describe(`controller/Controller`, () => {
     const controller = new Controller();
     assert.isObject(controller);
   });
-  // it(`makeBricks`, () => {
-  //   const controller = new Controller();
-  //   assert.isOk(controller.makeBricks(4, 4), `벽돌 생성 실패!`);
-  //   assert.isNumber(controller.getExistingBrickCount(), `벽돌을 셀 수 없다`);
-  //   assert.isArray(controller.getAvailableBricks(), `벽돌 배열을 가져올 수 없다!`);
-  // });
-  // it(`makeBricks_row:2,col:2일 때_벽돌을 만들면_cnt:4, array[2][2]의 벽돌이 생성된다`, () => {
-  //   const controller = new Controller();
-  //   assert.isOk(controller.makeBricks(4, 4), `벽돌 생성 실패!`);
-  //   assert.equal(controller.getExistingBrickCount(), 4, `벽돌을 셀 수 없다`);
-  //   controller
-  //     .getAvailableBricks()
-  //     .forEach(row => {
-  //       row.forEach(brick => {
-  //         assert.isTrue(brick instanceof Brick, `Brick 인스턴스가 아니다!`);
-  //       });
-  //     });
-  // });
+  
+  it(`startGame`, () => {
+    const controller = new Controller();
+    assert.isNotNull(controller.startGame());
+  });
+
+  it(`startGame_화면이 초기화 됐을 때_게임을 시작하면_true를 리턴한다`, () => {
+    const initialized = true;
+    const controller = new Controller(initialized);
+    assert.isTrue(controller.startGame());
+  });
+  
+  it(`startGame_화면이 초기화 전일 때_게임을 시작하면_false를 리턴한다`, () => {
+    const initialized = false;
+    const controller = new Controller(initialized);
+    assert.isFalse(controller.startGame());
+  });
+
+  it(`isPlaying_화면이 초기화 됐을 때_게임을 시작하면_Playing 상태로 바뀐다`, () => {
+    const initialized = true;
+    const controller = new Controller(initialized);
+    assert.isTrue(controller.startGame());
+    assert.isTrue(controller.isPlaying());
+  });
+
+  it(`isPlaying_화면이 초기화 전일 때_게임을 시작하면_false를 리턴한다`, () => {
+    const initialized = false;
+    const controller = new Controller(initialized);
+    assert.isFalse(controller.startGame());
+    assert.isFalse(controller.isPlaying());
+  });
+
+  
+  
+
 });
