@@ -5,7 +5,7 @@
     <img src="https://circleci.com/gh/sshplendid/breakout-in-javascript/tree/dev.svg?style=shield" alt="Circle CI" />
   </a>
   <a href="https://codecov.io/gh/sshplendid/breakout-in-javascript">
-    <img src="https://codecov.io/gh/sshplendid/breakout-in-javascript/branch/dev/graph/badge.svg" alt="CodeCov/>
+    <img src="https://codecov.io/gh/sshplendid/breakout-in-javascript/branch/dev/graph/badge.svg" alt="CodeCov"/>
   </a>
 </p>
 
