@@ -1,11 +1,11 @@
 <h1 align="center">Breakout-2D-javascript</h1>
 
 <p align="center">
-  <a href="https://circleci.com/gh/sshplendid/breakout-in-javascript/tree/master">
-    <img src="https://circleci.com/gh/sshplendid/breakout-in-javascript/tree/master.svg?style=shield" alt="Circle CI" />
+  <a href="https://circleci.com/gh/sshplendid/breakout-in-javascript/tree/dev">
+    <img src="https://circleci.com/gh/sshplendid/breakout-in-javascript/tree/dev.svg?style=shield" alt="Circle CI" />
   </a>
   <a href="https://codecov.io/gh/sshplendid/breakout-in-javascript">
-    <img src="https://codecov.io/gh/sshplendid/breakout-in-javascript/branch/master/graph/badge.svg" />
+    <img src="https://codecov.io/gh/sshplendid/breakout-in-javascript/branch/dev/graph/badge.svg" alt="CodeCov/>
   </a>
 </p>
 
