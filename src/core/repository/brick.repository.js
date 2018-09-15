@@ -4,23 +4,34 @@ const Brick = require('../elements/brick.js');
 const BRICKS = Symbol('BRICKS');
 const ROW = Symbol('ROW');
 const COL = Symbol('COL');
+const COLORS = Symbol('COLORS');
 
 class BrickRepository {
 
-  constructor() {
+  constructor(options) {
     this[BRICKS] = [];
-    this[ROW] = 0;
-    this[COL] = 0;
+    if(options) {
+      this[ROW] = options.row || 0;
+      this[COL] = options.col || 0;
+      this[COLORS] = options.colors || [];
+    }
   }
 
   createFreshBricks(row, col, options) {
-    const newArray = [];
-    for(let i = 0, len = row*col; i < len; i++)
-        newArray.push(new Brick(options));
+    this[BRICKS] = [];
+    this[ROW] = this[ROW] || row || options.row;
+    this[COL] = this[COL] || col || options.col;
 
-    this[BRICKS] = newArray;
-    this[ROW] = row;
-    this[COL] = col;
+     for(var c = 0; c < col; c++) {
+       for(var r = 0; r < row; r++) {
+         var brickX = c * (options.width + options.padding) + options.offset.left;
+         var brickY = r * (options.height + options.padding) + options.offset.top;
+         var durability = Math.ceil(Math.random()*options.durability) ;
+         
+         const brick = new Brick(brickX, brickY, options.width, options.height, options.colors[durability], durability);
+         this[BRICKS].push(brick);
+        }
+      }
     return true;
   }
 
@@ -42,31 +53,12 @@ class BrickRepository {
   }
 
   getBrick(x, y) {
-    return this.bricks[this.getIndex(x, y)];
+    return this.bricks[this.getIndex(x, y)] || undefined;
   }
 
   setBrick(x, y, brick) {
     return this.bricks[this.getIndex(x, y)] = brick;
   }
-  
-  /*
-  makeBricks(rows, columns) {
-    if(this.isPlaying() ) return false;
-    const brickArray = [];
-
-    for(let r = 0; r < rows; r++) {
-      const rowArray = [];
-      for(let c = 0; c < columns; c++) rowArray.push(new Brick());
-      brickArray.push(rowArray);
-    }
-    this[BRICKS] = brickArray;
-    return true;
-  }
-
-  isPlaying() {
-    return this[PLAYING];
-  }
-  */
 }
 
 module.exports = BrickRepository;
