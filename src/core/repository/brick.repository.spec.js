@@ -23,6 +23,10 @@ describe(`repository/BrickRepository`, () => {
     const repo = new BrickRepository();
     assert.isObject(repo);
   });
+  it(`constructor_withEmptyOptionsObject`, () => {
+    const repo = new BrickRepository({});
+    assert.isObject(repo);
+  });
   it(`createFreshBricks`, () => {
     const repo = new BrickRepository();
     assert.isTrue( repo.createFreshBricks(row, col, options) );
@@ -32,6 +36,7 @@ describe(`repository/BrickRepository`, () => {
   it(`getAvailableBricks`, () => {
     const repo = new BrickRepository();
     assert.isArray(repo.getAvailableBricks());
+    assert.deepEqual(repo.getAvailableBricks(), repo.getBricks());
   });
   
   it(`getIndex_r:${row},c:${col} 일 때_인덱스(1,3)는_6이 나온다`, () => {
@@ -81,7 +86,7 @@ describe(`repository/BrickRepository`, () => {
     const brick = repo.getBrick(1, 4);
     assert.isUndefined( brick );
   });
-  it(`setBrick_r:${row}, c:${col}일 때_3번째 벽돌을 바꾸면_아무일도 일어나지 않는다`, () => {
+  it(`getBrick_r:${row}, c:${col}일 때_3번째 벽돌을 바꾸면_아무일도 일어나지 않는다`, () => {
     const repo = new BrickRepository(options);
     repo.createFreshBricks(row, col, options);
     const brick = repo.getBrick(col, 1);

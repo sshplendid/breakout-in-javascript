@@ -5,6 +5,7 @@ const BRICKS = Symbol('BRICKS');
 const ROW = Symbol('ROW');
 const COL = Symbol('COL');
 const COLORS = Symbol('COLORS');
+const OPTIONS = Symbol('OPTIONS');
 
 class BrickRepository {
 
@@ -14,6 +15,8 @@ class BrickRepository {
       this[ROW] = options.row || 0;
       this[COL] = options.col || 0;
       this[COLORS] = options.colors || [];
+      this[OPTIONS] = options;
+      this.createFreshBricks(this.row, this.col, options);
     }
   }
 
@@ -43,6 +46,9 @@ class BrickRepository {
     return this.getAvailableBricks().length;
   }
 
+  getBricks() {
+    return this.getAvailableBricks();
+  }
   getAvailableBricks() {
     return this.bricks.filter(brick => brick.isNotBroken());
   }
@@ -54,10 +60,6 @@ class BrickRepository {
 
   getBrick(x, y) {
     return this.bricks[this.getIndex(x, y)] || undefined;
-  }
-
-  setBrick(x, y, brick) {
-    return this.bricks[this.getIndex(x, y)] = brick;
   }
 }
 
