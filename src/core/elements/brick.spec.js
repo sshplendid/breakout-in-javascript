@@ -35,6 +35,12 @@ describe(`core/elements/Brick`, () => {
     const expected = new Brick(1, 2, 3, 4, 'black', 5);
     assert.deepEqual(expected, actual);
   });
+  it(`constructor_options객체가 빈 객체일 때_생성하면_초기값이 세팅된다`, () => {
+    const options = {};
+    const actual = new Brick(options);
+    const expected = new Brick(0, 0, 0, 0, '#000000', 0);
+    assert.deepEqual(expected, actual);
+  });
 
   it(`constructor_인자가 있을때_생성자를 호출하면_속성을 조회할 수 있다`, () => {
     const actual = new Brick(1, 1, 1, 1, 'blue', 3);

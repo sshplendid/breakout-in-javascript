@@ -10,32 +10,45 @@ const Brick = require('../core/elements/brick.js');
 const Ball = require('../core/elements/ball.js');
 const Paddle = require('../core/elements/paddle.js');
 const Painter = require('../render/painter.js');
+const Renderer = require('../render/renderer.js');
 
 
 
 const PLAYING = Symbol('PLAYING');
-
+const INIT = Symbol('INIT');
 
 class Controller{
-  constructor() {
+  constructor(_init) {
     this[PLAYING] = false;
+    this[INIT] = _init || false;
   }
   
-  makeBricks(rows, columns) {
-    if(this.isPlaying() ) return false;
-    const brickArray = [];
+  startGame() {
+    this[PLAYING] = this[INIT];
+    // TODO setTimeInterval
 
-    for(let r = 0; r < rows; r++) {
-      const rowArray = [];
-      for(let c = 0; c < columns; c++) rowArray.push(new Brick());
-      brickArray.push(rowArray);
-    }
-    this[BRICKS] = brickArray;
-    return true;
+    return this[INIT];
   }
 
   isPlaying() {
     return this[PLAYING];
+  }
+
+  isGameOver() {
+    return !this.isPlaying();
+  }
+
+  isGameClear() {
+    return this.isPlaying() && this.hasExsitingBricks();
+  }
+
+  terminateGame() {
+    this[PLAYING] = false;
+    // TODO clearTimeInterval
+  }
+
+  hasExsitingBricks() {
+    return false;
   }
 }
 
