@@ -53,6 +53,10 @@ class BrickRepository {
     return this.bricks.filter(brick => brick.isNotBroken());
   }
 
+  hasNoBricks() {
+    return this.bricks.filter(brick => brick.isNotBroken()).length == 0;
+  }
+
   getIndex(x, y) {
     if(y > this.row || x >> this.col) return -1;
     return (y - 1) * this.row + (x - 1);

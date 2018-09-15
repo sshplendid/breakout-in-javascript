@@ -38,6 +38,13 @@ describe(`repository/BrickRepository`, () => {
     assert.isArray(repo.getAvailableBricks());
     assert.deepEqual(repo.getAvailableBricks(), repo.getBricks());
   });
+
+  it(`hasNoBricks`, () => {
+    const repo = new BrickRepository();
+    assert.isArray(repo.getAvailableBricks());
+    assert.equal(repo.getExistingBrickCount(), 0);
+    assert.isTrue(repo.hasNoBricks());
+  });
   
   it(`getIndex_r:${row},c:${col} 일 때_인덱스(1,3)는_6이 나온다`, () => {
     const repo = new BrickRepository();
