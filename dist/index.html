@@ -5,11 +5,67 @@
     <title>DEMO</title>
     <style>
       * { padding: 0; margin: 0; }
+      html, body {
+        height: 100%;
+        width: 100%;
+      }
       canvas { background: #eee; display: block; margin: 0 auto; }
+      .full {
+        position: fixed;
+        height: 100%;
+        width: 100%;
+        left: 0px;
+        top: 0px;
+      }
+      .mouseCtrl {
+       z-index: 1; 
+      }
+      .leftFull {
+        position: fixed;
+        height: 100%;
+        width: 50%;
+        left: 0px;
+        top: 0px;
+        z-index: 3;
+        /* background-color: rgba(100, 1, 20, 0.28); */
+      }
+      .rightFull {
+        position: fixed;
+        height: 100%;
+        width: 50%;
+        /* left: 0px; */
+        top: 0px;
+        z-index: -3;
+        /* background-color: rgba(0, 63, 187, 0.28); */
+      }
+      /* .rightFull:active {
+        background-color: rgba(191, 63, 187, 0.28);
+      }
+      .leftFull:active {
+        background-color: rgba(191, 63, 187, 0.28);
+      } */
+      .app {
+        /* background-color: yellow; */
+        z-index:-1;
+      }
+      .popup {
+        float: left;
+        position: fixed;
+        top: 20px;
+        left: 620px;
+        z-index: 2;
+      }
     </style>
   </head>
   <body>
+    <div id="debug" class="popup" style="display:none;">
+      <p>w: <span id="width"></span>px, <span id="height"></span>px</p>
+    </div>
     <!------------------------------------------->
+    <script>
+      document.querySelector('#width').innerText = window.innerWidth;
+      document.querySelector('#height').innerText = window.innerHeight;
+    </script>
     <script src="breakout.js"></script>
   </body>
 </html>

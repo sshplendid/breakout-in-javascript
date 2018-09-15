@@ -18,7 +18,7 @@ const CONF = {
   canvasHeight: 600,
   paddle: {
     top: 500,
-    left: 0,
+    left: 250,
     width: 120,
     height: 10,
     color: 'rgba(36, 68, 38, 0.8)',
@@ -38,164 +38,180 @@ const CONF = {
     }
   },
   balls: {
-
+    x: 230,
+    y: 230,
+    radius: 3,
+    color: 'green',
+    dx: 4,
+    dy: 4
   }
 };
 
 
-// init
-var app = document.createElement('div');
+// RENDER: HTML document Element 선언
+const container = document.createElement('div');
+container.setAttribute('id', 'container');
+container.setAttribute('class', 'full');
+
+const app = document.createElement('div');
 app.setAttribute('id', 'app');
 app.setAttribute('class', 'app full');
-
-var canvas = document.createElement('canvas');
+const canvas = document.createElement('canvas');
 canvas.width = CONF.canvasWidth;
 canvas.height = CONF.canvasHeight;
 app.appendChild(canvas);
+container.appendChild(app);
 
-const painter = new Painter(canvas, 0, 0, CONF.canvasWidth, CONF.canvasHeight);
-const paddle = new Paddle(250, 500, 120, 10, 'rgba(36, 68, 38, 0.8)', 3);
+const mouseCtrl = document.createElement('div');
+mouseCtrl.setAttribute('id', 'mouseCtrl');
+mouseCtrl.setAttribute('class', 'full mouseCtrl');
+const leftCtrl = document.createElement('div');
+leftCtrl.setAttribute('id', 'leftCtrl');
+leftCtrl.setAttribute('class', 'leftFull');
+const rightCtrl = document.createElement('div');
+rightCtrl.setAttribute('id', 'rightCtrl');
+rightCtrl.setAttribute('class', 'rightFull');
+rightCtrl.style.left = `${CONF.windowWidth/2}px`;
+mouseCtrl.appendChild(leftCtrl);
+mouseCtrl.appendChild(rightCtrl);
+leftCtrl.onmousedown = () => { leftPressed = true; };
+leftCtrl.onmouseup = () => { leftPressed = false; };
+rightCtrl.onmousedown = () => { rightPressed = true; };
+rightCtrl.onmouseup = () => { rightPressed = false; };
 
-document.body.appendChild(app);
-var ctx = canvas.getContext('2d');
+container.appendChild(mouseCtrl);
+
+
+// 속성 선언
+  // 메서드
+const detectCollision = (ball, bricks) => {
+  bricks.forEach(brick => {
+    if(brick.durability > 0 && ball.x + ball.radius > brick.x && ball.x + ball.radius < brick.x + brick.width
+      && ball.y + ball.radius > brick.y && ball.y + ball.radius < brick.y + brick.height) {
+      if(ball.x < brick.x )
+        ball.dx = (-1)*ball.dx;
+      else
+        ball.dy = ((-1)*ball.dy);
+      
+      crush(brick, CONF.bricks.colors); // brick._collision();
+    }
+  });
+};
+const isGameOver = (balls) => {
+  return hasNoActiveBalls(balls);    
+};
+const isGameClear = (bricks) => {
+  return bricks.hasNoBricks();
+}
+const hasNoActiveBalls = (balls) => balls.filter(ball => ball.y - ball.radius > canvas.height || ball.x - ball.radius < 0 || ball.x  + ball.radius > canvas.height).length  == balls.length;
+const hasActiveBalls = (balls) => !hasNoActiveBalls(balls);
+
+const createBalls = (num) => {
+  const balls = [];
+  for(let i = 0; i < num; i++) 
+    balls.push(new Ball(CONF.balls.x, CONF.balls.y, CONF.balls.radius, CONF.balls.color, (Math.random() - 0.5) * CONF.balls.dx, (Math.random() - 0.5) * CONF.balls.dy));
+  return balls;
+};
+
+const moveBall = (_ball, _paddle) => {
+  if(_ball.y - _ball.radius + _ball.dy <= 0) {
+    _ball.dy = _ball.dy * (0-1);
+  } else if(_ball.y + _ball.radius + _ball.dy >= canvas.height - CONF.bricks.offset.top) {
+    if(_ball.y < canvas.height - CONF.bricks.offset.top && _ball.x > _paddle.x && _ball.x <= _paddle.x + _paddle.width) {
+      _ball.dy = _ball.dy * (0-1);
+    }
+  }
+  if(_ball.x + _ball.dx <  _ball.radius || _ball.x + _ball.dx > canvas.width - _ball.radius) {
+    _ball.dx = _ball.dx * (0-1);
+  } else if( (_ball.y > _paddle.y && _ball.y < _paddle.y + _paddle.height && _ball.x + _ball.radius + _ball.dx >= _paddle.x)
+            && (_ball.y > _paddle.y && _ball.y < _paddle.y + _paddle.height && _ball.x - _ball.radius + _ball.dx <= _paddle.x + _paddle.width) ) {
+    _ball.dx = _ball.dx * (0-1);
+  }
+
+  _ball.x = _ball.x + _ball.dx;
+  _ball.y = _ball.y + _ball.dy;
+};
+const crush = (_brick, _colors) => {
+  _brick.crack();
+  _brick.color = _colors[_brick.durability];
+  return true;
+};
+const terminateGame = (_intervalId, _message, _painter, _config) => {
+  console.log(`Game terminated => ${_message}`);
+  clearInterval(_intervalId);
+  _painter.clear(0, 0, _config.canvasWidth, _config.canvasHeight);
+}
+const movePaddle = (_sigLeft, _sigRight, _paddle, _config)  =>{
+  if(_sigLeft && _paddle.isNotOnLeftBoundary(0)) return _paddle.move(true);
+  else if(_sigRight && _paddle.isNotOnRightBoundary(_config.canvasWidth)) return _paddle.move(false);
+  return undefined;
+};
+
+const startDrawCanvas = (_painter, _bricks, _balls, _paddle, _config) => {
+  const intervalId = setInterval(function() {
+    _painter.clear(0, 0, _config.canvasWidth, _config.canvasHeight);
+
+    _bricks.getBricks().forEach(brick => {
+      painter.draw(brick);
+    });
+    _balls.forEach(ball => {
+      detectCollision(ball, bricks.getBricks());// ball._detectCollision(_bricks.getBricks());
+      moveBall(ball, _paddle); // ball._move(_paddle);
+      _painter.draw(ball);
+    });
+    movePaddle(leftPressed, rightPressed, _paddle, _config);
+    _painter.draw(_paddle);
+    if(isGameOver(_balls) || isGameClear(_bricks)) {
+      terminateGame(intervalId, '게임이 끝났다', _painter, _config);
+    }
+  }, 10);
+  console.debug(`intervalId => ${intervalId}`);
+};
 
 var rightPressed = false;
 var leftPressed = false;
-
-function keyDownHandler(e) {
+const keyDownHandler = (e) =>{
     if(e.keyCode == 39) {
         rightPressed = true;
     }
     else if(e.keyCode == 37) {
         leftPressed = true;
     }
-}
-
-function keyUpHandler(e) {
+};
+const keyUpHandler = (e) => {
     if(e.keyCode == 39) {
         rightPressed = false;
     }
     else if(e.keyCode == 37) {
         leftPressed = false;
     }
-}
+};
 
+  // 멤버
+const painter = new Painter(canvas, 0, 0, CONF.canvasWidth, CONF.canvasHeight);
+const balls = createBalls(2);
+const bricks = new BrickRepository(CONF.bricks);
+const paddle = new Paddle(CONF.paddle.left, CONF.paddle.top, CONF.paddle.width, CONF.paddle.height, CONF.paddle.color, CONF.paddle.dx);
+var isPlaying = false;
+
+
+// init
+// RENDER app container 선언
+document.body.appendChild(container);
 document.addEventListener('keyup', keyUpHandler);
 document.addEventListener('keydown', keyDownHandler);
 
-
-function BallManager(number) {
-  var balls = [];
-  for(var i = 0; i < number; i++) {
-    // DEL_LEGACY balls[i] = new _Ball(230, 230, 3, 'blue', (Math.random() - 0.5)*4, (Math.random() - 0.5)*4);
-    balls[i] = new Ball(230, 230, 3, 'blue', (Math.random() - 0.5)*4, (Math.random() - 0.5)*4);
-    { /*-------- LEGACY START ---------------------------*/
-      balls[i]._move = function(paddle) {
-        console.trace(`ball{x:${this.x}, y:${this.y}}`);
-        if(this.y - this.radius + this.dy <= 0) {
-          this.dy = this.dy * (0-1);
-        } else if(this.y + this.radius + this.dy >= canvas.height - CONF.bricks.offset.top) {
-          if(this.y < canvas.height - CONF.bricks.offset.top && this.x > paddle.x && this.x <= paddle.x + paddle.width) {
-            this.dy = this.dy * (0-1);
-          }
-        }
-        if(this.x + this.dx <  this.radius || this.x + this.dx > canvas.width - this.radius) {
-          this.dx = this.dx * (0-1);
-        } else if( (this.y > paddle.y && this.y < paddle.y + paddle.height && this.x + this.radius + this.dx >= paddle.x)
-                  && (this.y > paddle.y && this.y < paddle.y + paddle.height && this.x - this.radius + this.dx <= paddle.x + paddle.width) ) {
-          this.dx = this.dx * (0-1);
-        }
-      
-        this.x = this.x + this.dx;
-        this.y = this.y + this.dy;
-      };
-    } /*-------- LEGACY END ---------------------------*/
-  }
-
+var els = document.querySelectorAll('*');
+Array.prototype.forEach.call(els, (el) => {
+  el.mousedown = () => console.log(`${el.nodeName}: ${el.id}`);
+});
   
-  this.get = i => balls[i] || 0;
-  this.getAll = () => balls;
-  this.length = balls.length;
-  this.allGone = () => balls.filter(ball => ball.y - ball.radius > canvas.height || ball.x - ball.radius < 0 || ball.x  + ball.radius > canvas.height).length  == balls.length;
-}
-
-const detectCollision = (ball, bricks) => {
-  // balls.forEach(ball => {
-    // TODO 충돌 감지 코드 작성!!
-    bricks.forEach(brick => {
-      if(brick.durability > 0 && ball.x + ball.radius > brick.x && ball.x + ball.radius < brick.x + brick.width
-        && ball.y + ball.radius > brick.y && ball.y + ball.radius < brick.y + brick.height) {
-        // TODO 벽돌 안에 들어가는 버그 수정하기
-        if(ball.x < brick.x )
-          ball.dx = (-1)*ball.dx;
-        else
-          ball.dy = ((-1)*ball.dy);
-        
-        crush(brick, CONF.bricks.colors); // brick._collision();
-      }
-    });
-  // });
+document.body.onclick = () => {
+  if(isPlaying) return;
+  startDrawCanvas(painter, bricks, balls, paddle, CONF);
+  isPlaying = true;
+  console.log(`game started`);
 };
-
-
-
-function crush(brick, colors) {
-  brick.crack();
-  brick.color = colors[brick.durability];
-  return true;
-}
-  function isOver(ballManager, intervalId) {
-    if(ballManager.allGone()) {
-      alert('GAME OVER');
-      clearInterval(intervalId);
-    }
-  }
-
+console.log(`refactored: v1.4`);
   
 
-  
-  { // LEGACY CODE --------------------------------->
-    var ballManager = new BallManager(2);
-  }
-  var bricks = new BrickRepository(CONF.bricks);
-  function movePaddle(sigLeft, sigRight, paddle, config) {
-    if(sigLeft && paddle.isNotOnLeftBoundary(0)) return paddle.move(true);
-    else if(sigRight && paddle.isNotOnRightBoundary(config.canvasWidth)) return paddle.move(false);
-    return undefined;
-  }
-  function startDrawCanvas(_painter, _bricks, _balls, _paddle, _config) {
-    const intervalId = setInterval(function() {
-      _painter.clear(0, 0, _config.canvasWidth, _config.canvasHeight);
-  
-      // bricks.drawBricks();
-      /* LEGACY
-      _bricks.getBricks().forEach(brickRow => {
-        brickRow.forEach(brick => {
-          painter.draw(brick);
-        });
-      });
-      */
-     _bricks.getBricks().forEach(brick => {
-       console.debug(`draw brick: ${brick.x}, ${brick.y}`);
-       painter.draw(brick);
-     });
-      _balls.getAll().forEach(ball => {
-        detectCollision(ball, bricks.getBricks());// ball._detectCollision(_bricks.getBricks());
-        ball._move(_paddle);
-        _painter.draw(ball);
-      });
-      movePaddle(leftPressed, rightPressed, _paddle, _config);
-      _painter.draw(_paddle);
-      isOver(_balls, intervalId);
-    }, 10);
-  }
-
-  var isPlaying = false;
-  document.body.onclick = () => {
-    if(isPlaying) return;
-    startDrawCanvas(painter, bricks, ballManager, paddle, CONF);
-    isPlaying = true;
-    console.log(`game started`);
-  };
-  console.log(`refactored: v1.4`);
-  
