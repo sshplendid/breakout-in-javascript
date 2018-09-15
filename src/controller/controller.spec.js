@@ -31,6 +31,8 @@ describe(`controller/Controller`, () => {
     const controller = new Controller(initialized);
     assert.isTrue(controller.startGame());
     assert.isTrue(controller.isPlaying());
+    assert.isFalse(controller.isGameOver());
+    assert.isFalse(controller.isGameClear());
   });
 
   it(`isPlaying_화면이 초기화 전일 때_게임을 시작하면_false를 리턴한다`, () => {
@@ -39,8 +41,15 @@ describe(`controller/Controller`, () => {
     assert.isFalse(controller.startGame());
     assert.isFalse(controller.isPlaying());
   });
-
+  
+  it(`terminateGame`, () => {
+    const initialized = true;
+    const controller = new Controller(true);
+    assert.isTrue(controller.startGame());
+    assert.isTrue(controller.isPlaying());
+    controller.terminateGame();
+    assert.isTrue(controller.isGameOver());
+  });
   
   
-
 });

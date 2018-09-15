@@ -43,7 +43,7 @@ class Controller{
   }
 
   terminateGame() {
-    this[Playing] = false;
+    this[PLAYING] = false;
     // TODO clearTimeInterval
   }
 
