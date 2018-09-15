@@ -10,6 +10,7 @@ const Paddle = require('./core/elements/paddle.js');
 const Painter = require('./render/painter.js');
 const Renderer = require('./render/renderer.js');
 
+
 // config
 const CONF = {
   windowWidth: window.innerWidth,
@@ -47,6 +48,20 @@ const CONF = {
   }
 };
 
+// 브라우저 크기 확인
+function adjustBrowserSize() {
+  if(CONF.canvasWidth > CONF.windowWidth) {
+    console.debug(`canvas width changed`)
+    CONF.canvasWidth = CONF.windowWidth;
+    CONF.bricks.width = (CONF.canvasWidth-30)/4;
+    CONF.bricks.padding = 5;
+  }
+  if(CONF.canvasHeight > CONF.windowHeight) {
+    console.debug(`canvas height changed`)
+    CONF.cnavasHeight = CONF.windowHeight;
+  }
+}
+adjustBrowserSize();
 
 // RENDER: HTML document Element 선언
 const container = document.createElement('div');
@@ -78,6 +93,10 @@ leftCtrl.onmousedown = () => { leftPressed = true; };
 leftCtrl.onmouseup = () => { leftPressed = false; };
 rightCtrl.onmousedown = () => { rightPressed = true; };
 rightCtrl.onmouseup = () => { rightPressed = false; };
+leftCtrl.ontouchstart = () => { leftPressed = true; };
+leftCtrl.ontouchend = () => { leftPressed = false; };
+rightCtrl.ontouchstart = () => { rightPressed = true; };
+rightCtrl.ontouchend = () => { rightPressed = false; };
 
 container.appendChild(mouseCtrl);
 
