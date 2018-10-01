@@ -13,10 +13,14 @@ const Renderer = require('./render/renderer.js');
 
 // config
 const CONF = {
-  windowWidth: window.innerWidth,
-  windowHeight: window.innerHeight,
-  canvasWidth: 450,
-  canvasHeight: 600,
+  window: {
+    width: window.innerWidth,
+    height: window.innerHeight,
+  },
+  canvas: {
+    width: 450,
+    height: 600
+  },
   paddle: {
     top: 500,
     left: 250,
@@ -50,15 +54,15 @@ const CONF = {
 
 // 브라우저 크기 확인
 function adjustBrowserSize() {
-  if(CONF.canvasWidth > CONF.windowWidth) {
+  if(CONF.canvas.width > CONF.window.width) {
     console.debug(`canvas width changed`)
-    CONF.canvasWidth = CONF.windowWidth;
-    CONF.bricks.width = (CONF.canvasWidth-30)/4;
+    CONF.canvas.width = CONF.window.width;
+    CONF.bricks.width = (CONF.canvas.width-30)/4;
     CONF.bricks.padding = 5;
   }
-  if(CONF.canvasHeight > CONF.windowHeight) {
+  if(CONF.canvas.height > CONF.window.height) {
     console.debug(`canvas height changed`)
-    CONF.cnavasHeight = CONF.windowHeight;
+    CONF.cnavasHeight = CONF.window.height;
   }
 }
 adjustBrowserSize();
@@ -72,8 +76,8 @@ const app = document.createElement('div');
 app.setAttribute('id', 'app');
 app.setAttribute('class', 'app full');
 const canvas = document.createElement('canvas');
-canvas.width = CONF.canvasWidth;
-canvas.height = CONF.canvasHeight;
+canvas.width = CONF.canvas.width;
+canvas.height = CONF.canvas.height;
 app.appendChild(canvas);
 container.appendChild(app);
 
@@ -86,7 +90,7 @@ leftCtrl.setAttribute('class', 'leftFull');
 const rightCtrl = document.createElement('div');
 rightCtrl.setAttribute('id', 'rightCtrl');
 rightCtrl.setAttribute('class', 'rightFull');
-rightCtrl.style.left = `${CONF.windowWidth/2}px`;
+rightCtrl.style.left = `${CONF.window.width/2}px`;
 mouseCtrl.appendChild(leftCtrl);
 mouseCtrl.appendChild(rightCtrl);
 leftCtrl.onmousedown = () => { leftPressed = true; };
@@ -97,7 +101,6 @@ leftCtrl.ontouchstart = () => { leftPressed = true; };
 leftCtrl.ontouchend = () => { leftPressed = false; };
 rightCtrl.ontouchstart = () => { rightPressed = true; };
 rightCtrl.ontouchend = () => { rightPressed = false; };
-
 container.appendChild(mouseCtrl);
 
 
@@ -122,7 +125,7 @@ const isGameOver = (balls) => {
 const isGameClear = (bricks) => {
   return bricks.hasNoBricks();
 }
-const hasNoActiveBalls = (balls) => balls.filter(ball => ball.y - ball.radius > canvas.height || ball.x - ball.radius < 0 || ball.x  + ball.radius > canvas.height).length  == balls.length;
+const hasNoActiveBalls = (balls) => balls.filter(ball => ball.y - ball.radius > CONF.canvas.height || ball.x - ball.radius < 0 || ball.x  + ball.radius > CONF.canvas.height).length  == balls.length;
 const hasActiveBalls = (balls) => !hasNoActiveBalls(balls);
 
 const createBalls = (num) => {
@@ -135,8 +138,8 @@ const createBalls = (num) => {
 const moveBall = (_ball, _paddle) => {
   if(_ball.y - _ball.radius + _ball.dy <= 0) {
     _ball.dy = _ball.dy * (0-1);
-  } else if(_ball.y + _ball.radius + _ball.dy >= canvas.height - CONF.bricks.offset.top) {
-    if(_ball.y < canvas.height - CONF.bricks.offset.top && _ball.x > _paddle.x && _ball.x <= _paddle.x + _paddle.width) {
+  } else if(_ball.y + _ball.radius + _ball.dy >= CONF.canvas.height - CONF.bricks.offset.top) {
+    if(_ball.y < CONF.canvas.height - CONF.bricks.offset.top && _ball.x > _paddle.x && _ball.x <= _paddle.x + _paddle.width) {
       _ball.dy = _ball.dy * (0-1);
     }
   }
@@ -158,17 +161,17 @@ const crush = (_brick, _colors) => {
 const terminateGame = (_intervalId, _message, _painter, _config) => {
   console.log(`Game terminated => ${_message}`);
   clearInterval(_intervalId);
-  _painter.clear(0, 0, _config.canvasWidth, _config.canvasHeight);
+  _painter.clear(0, 0, _config.canvas.width, _config.canvas.height);
 }
 const movePaddle = (_sigLeft, _sigRight, _paddle, _config)  =>{
   if(_sigLeft && _paddle.isNotOnLeftBoundary(0)) return _paddle.move(true);
-  else if(_sigRight && _paddle.isNotOnRightBoundary(_config.canvasWidth)) return _paddle.move(false);
+  else if(_sigRight && _paddle.isNotOnRightBoundary(_config.canvas.width)) return _paddle.move(false);
   return undefined;
 };
 
 const startDrawCanvas = (_painter, _bricks, _balls, _paddle, _config) => {
   const intervalId = setInterval(function() {
-    _painter.clear(0, 0, _config.canvasWidth, _config.canvasHeight);
+    _painter.clear(0, 0, _config.canvas.width, _config.canvas.height);
 
     _bricks.getBricks().forEach(brick => {
       painter.draw(brick);
@@ -207,7 +210,7 @@ const keyUpHandler = (e) => {
 };
 
   // 멤버
-const painter = new Painter(canvas, 0, 0, CONF.canvasWidth, CONF.canvasHeight);
+const painter = new Painter(canvas, 0, 0, CONF.canvas.width, CONF.canvas.height);
 const balls = createBalls(2);
 const bricks = new BrickRepository(CONF.bricks);
 const paddle = new Paddle(CONF.paddle.left, CONF.paddle.top, CONF.paddle.width, CONF.paddle.height, CONF.paddle.color, CONF.paddle.dx);
@@ -231,6 +234,22 @@ document.body.onclick = () => {
   isPlaying = true;
   console.log(`game started`);
 };
+const orientationHandler = (e) => {
+  var x = e.gamma || 0;
+  if(x > 15) {
+    console.log(`left!!!`);
+    rightPressed = true;
+    leftPreessed = false;
+  } else if(x < -15) {
+    console.log(`right!!!`);
+    leftPressed = true;
+    rightPressed = false;
+  } else {
+    rightPressed = false;
+    leftPressed = false;
+  }
+};
+window.addEventListener('deviceorientation', orientationHandler);
 console.log(`refactored: v1.4`);
   
 
