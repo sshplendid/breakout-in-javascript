@@ -101,7 +101,6 @@ leftCtrl.ontouchstart = () => { leftPressed = true; };
 leftCtrl.ontouchend = () => { leftPressed = false; };
 rightCtrl.ontouchstart = () => { rightPressed = true; };
 rightCtrl.ontouchend = () => { rightPressed = false; };
-
 container.appendChild(mouseCtrl);
 
 
@@ -235,6 +234,22 @@ document.body.onclick = () => {
   isPlaying = true;
   console.log(`game started`);
 };
+const orientationHandler = (e) => {
+  var x = e.gamma || 0;
+  if(x > 15) {
+    console.log(`left!!!`);
+    rightPressed = true;
+    leftPreessed = false;
+  } else if(x < -15) {
+    console.log(`right!!!`);
+    leftPressed = true;
+    rightPressed = false;
+  } else {
+    rightPressed = false;
+    leftPressed = false;
+  }
+};
+window.addEventListener('deviceorientation', orientationHandler);
 console.log(`refactored: v1.4`);
   
 
